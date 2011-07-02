@@ -1,1 +1,21 @@
 Fluent Parser is intended to be an easier to use API for the common task of parsing Fixed Width and CSV files into Entities for use in C#
+
+Example Usage:
+
+ItemEntity entity = new ItemEntity();
+using (var file = new FixedWidthFile(filename))
+{
+	file.Open(); // Open underlying file
+
+	var line = file.ReadLine(); // Read in the first line
+
+	entity.Name = line.GetField(0, 19).ToString().Trim();
+
+	// Read a decimal value with a default in case of failure
+	entity.Price = line.GetField(20, 29).ToDecimal() ?? 0; 
+
+	entity.UPC = line.GetField(29, 42).ToString();
+	entity.Size = line.GetField(42, 52).ToString().Trim();
+	entity.Brand = line.GetField(52, 72).ToString().Trim();
+	entity.EffectiveDate = line.GetField(73, 82).ToDateTime();
+}
