@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentParser", "FluentParser\FluentParser.csproj", "{10268C0E-15CF-4F7F-81A5-E3239BA19C60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{2C38D853-E4B6-4E91-B077-DA7C5F076DB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5ABDB4F-D3EF-4279-8721-E3FBDBF54FEF}"
+	ProjectSection(SolutionItems) = preProject
+		FluentParser.vsmdi = FluentParser.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = FluentParser.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10268C0E-15CF-4F7F-81A5-E3239BA19C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10268C0E-15CF-4F7F-81A5-E3239BA19C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10268C0E-15CF-4F7F-81A5-E3239BA19C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10268C0E-15CF-4F7F-81A5-E3239BA19C60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C38D853-E4B6-4E91-B077-DA7C5F076DB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C38D853-E4B6-4E91-B077-DA7C5F076DB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C38D853-E4B6-4E91-B077-DA7C5F076DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C38D853-E4B6-4E91-B077-DA7C5F076DB8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
