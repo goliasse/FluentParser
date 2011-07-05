@@ -1,30 +1,30 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentParser;
 using System.IO;
+using FluentParser;
 
 namespace TestProject1
 {
     [TestClass]
-    public class FixedWidthFileTests
+    public class CSVFileTests
     {
-        private const string filename = "testfixedwith.txt";
-        private const string firstLine = "Pepsi Max          00001.6900012000001188020oz      Pepsi               06/18/2011";
+        private const string filename = "csvtest.csv";
+        private const string firstline = "Pepsi Max,1.69,0120000011880,20oz,Pepsi,06/18/2011";
 
         [TestInitialize]
-        public void SetUp()
+        public void Setup()
         {
             using (var testfile = new StreamWriter(File.OpenWrite(filename)))
             {
-                testfile.WriteLine(firstLine);
+                testfile.WriteLine(firstline);
             }
         }
 
         [TestCleanup]
-        public void TearDown()
+        public void Teardown()
         {
             File.Delete(filename);
         }
@@ -32,7 +32,7 @@ namespace TestProject1
         [TestMethod]
         public void OpensFile()
         {
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
             }
@@ -43,7 +43,7 @@ namespace TestProject1
         [TestMethod]
         public void ThrowsFileNotFoundWhenDoesNotExist()
         {
-            using (var file = new FixedWidthFile("doesnotexist.txt"))
+            using (var file = new CSVFile("doesnotexist.txt"))
             {
                 try
                 {
@@ -68,7 +68,7 @@ namespace TestProject1
             testfile.WriteLine("");
             testfile.Close();
 
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
                 var line = file.ReadLine();
@@ -79,21 +79,21 @@ namespace TestProject1
         [TestMethod]
         public void ReadSingleLine()
         {
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
                 var line = file.ReadLine();
-                Assert.AreEqual(firstLine, line.ToString());
+                Assert.AreEqual(firstline, line.ToString());
             }
         }
 
         [TestMethod]
         public void ReadUntilEOL()
         {
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
-                FixedWidthLine line;
+                CSVLine line;
                 do
                 {
                     line = file.ReadLine();
@@ -107,16 +107,16 @@ namespace TestProject1
         public void ReadAndParseFirstLine()
         {
             ItemEntity entity = new ItemEntity();
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
                 var line = file.ReadLine();
-                entity.Name = line.GetField(0, 19).ToString().Trim();
-                entity.Price = line.GetField(20, 29).TryToDecimal() ?? 0;
-                entity.UPC = line.GetField(29, 42).ToString();
-                entity.Size = line.GetField(42, 52).ToString().Trim();
-                entity.Brand = line.GetField(52, 72).ToString().Trim();
-                entity.EffectiveDate = line.GetField(73, 82).TryToDateTime();
+                entity.Name = line.GetField(0).ToString().Trim();
+                entity.Price = line.GetField(1).TryToDecimal() ?? 0;
+                entity.UPC = line.GetField(2).ToString();
+                entity.Size = line.GetField(3).ToString().Trim();
+                entity.Brand = line.GetField(4).ToString().Trim();
+                entity.EffectiveDate = line.GetField(5).TryToDateTime();
             }
 
             Assert.AreEqual("Pepsi Max", entity.Name);
@@ -131,16 +131,16 @@ namespace TestProject1
         public void AlternateFieldAccessMethod()
         {
             ItemEntity entity = new ItemEntity();
-            using (var file = new FixedWidthFile(filename))
+            using (var file = new CSVFile(filename))
             {
                 file.Open();
                 var line = file.ReadLine();
-                entity.Name = line[0, 19].ToString().Trim();
-                entity.Price = line[20, 29].TryToDecimal() ?? 0;
-                entity.UPC = line[29, 42].ToString();
-                entity.Size = line[42, 52].ToString().Trim();
-                entity.Brand = line[52, 72].ToString().Trim();
-                entity.EffectiveDate = line[73, 82].TryToDateTime();
+                entity.Name = line[0].ToString().Trim();
+                entity.Price = line[1].TryToDecimal() ?? 0;
+                entity.UPC = line[2].ToString();
+                entity.Size = line[3].ToString().Trim();
+                entity.Brand = line[4].ToString().Trim();
+                entity.EffectiveDate = line[5].TryToDateTime();
             }
 
             Assert.AreEqual("Pepsi Max", entity.Name);
@@ -150,5 +150,6 @@ namespace TestProject1
             Assert.AreEqual("Pepsi", entity.Brand);
             Assert.AreEqual(new DateTime(2011, 6, 18), entity.EffectiveDate);
         }
+
     }
 }

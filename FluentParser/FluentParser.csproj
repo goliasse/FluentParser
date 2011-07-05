@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVFile.cs" />
+    <Compile Include="CSVLine.cs" />
+    <Compile Include="CSVParser.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FixedWidthFile.cs" />
     <Compile Include="FixedWidthLine.cs" />
