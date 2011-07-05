@@ -113,11 +113,35 @@ namespace TestProject1
                 file.Open();
                 var line = file.ReadLine();
                 entity.Name = line.GetField(0, 19).ToString().Trim();
-                entity.Price = line.GetField(20, 29).ToDecimal() ?? 0;
+                entity.Price = line.GetField(20, 29).TryToDecimal() ?? 0;
                 entity.UPC = line.GetField(29, 42).ToString();
                 entity.Size = line.GetField(42, 52).ToString().Trim();
                 entity.Brand = line.GetField(52, 72).ToString().Trim();
-                entity.EffectiveDate = line.GetField(73, 82).ToDateTime();
+                entity.EffectiveDate = line.GetField(73, 82).TryToDateTime();
+            }
+
+            Assert.AreEqual("Pepsi Max", entity.Name);
+            Assert.AreEqual(1.69M, entity.Price);
+            Assert.AreEqual("0120000011880", entity.UPC);
+            Assert.AreEqual("20oz", entity.Size);
+            Assert.AreEqual("Pepsi", entity.Brand);
+            Assert.AreEqual(new DateTime(2011, 6, 18), entity.EffectiveDate);
+        }
+
+        [TestMethod]
+        public void AlternateFieldAccessMethod()
+        {
+            ItemEntity entity = new ItemEntity();
+            using (var file = new FixedWidthFile(filename))
+            {
+                file.Open();
+                var line = file.ReadLine();
+                entity.Name = line[0, 19].ToString().Trim();
+                entity.Price = line[20, 29].TryToDecimal() ?? 0;
+                entity.UPC = line[29, 42].ToString();
+                entity.Size = line[42, 52].ToString().Trim();
+                entity.Brand = line[52, 72].ToString().Trim();
+                entity.EffectiveDate = line[73, 82].TryToDateTime();
             }
 
             Assert.AreEqual("Pepsi Max", entity.Name);

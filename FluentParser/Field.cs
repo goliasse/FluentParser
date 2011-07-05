@@ -7,26 +7,36 @@ namespace FluentParser
 {
     public class Field
     {
-        private string p;
+        private string _fieldString;
 
-        public Field(string p)
+        public Field(string fieldStr)
         {
-            this.p = p;
+            this._fieldString = fieldStr;
         }
 
-        public int? ToInt()
+        public int ToInt()
+        {
+            return int.Parse(_fieldString);
+        }
+
+        public int? TryToInt()
         {
             int result;
-            if (int.TryParse(p, out result))
+            if (int.TryParse(_fieldString, out result))
                 return result;
 
             return null;
         }
 
-        public decimal? ToDecimal()
+        public decimal ToDecimal()
+        {
+            return decimal.Parse(_fieldString);
+        }
+
+        public decimal? TryToDecimal()
         {
             decimal result;
-            if (decimal.TryParse(p, out result))
+            if (decimal.TryParse(_fieldString, out result))
             {
                 return result;
             }
@@ -34,10 +44,15 @@ namespace FluentParser
             return null;
         }
 
-        public float? ToFloat()
+        public float ToFloat()
+        {
+            return float.Parse(_fieldString);
+        }
+
+        public float? TryToFloat()
         {
             float result;
-            if (float.TryParse(p, out result))
+            if (float.TryParse(_fieldString, out result))
             {
                 return result;
             }
@@ -47,8 +62,13 @@ namespace FluentParser
 
         public DateTime ToDateTime()
         {
+            return DateTime.Parse(_fieldString);
+        }
+
+        public DateTime TryToDateTime()
+        {
             DateTime result;
-            if (DateTime.TryParse(p, out result))
+            if (DateTime.TryParse(_fieldString, out result))
             {
                 return result;
             }
@@ -58,7 +78,7 @@ namespace FluentParser
 
         public override string ToString()
         {
-            return p;
+            return _fieldString;
         }
     }
 }

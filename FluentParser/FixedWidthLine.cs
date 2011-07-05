@@ -10,6 +10,19 @@ namespace FluentParser
         private string line;
         public bool IsEOF { get; private set; }
 
+        public Field this[int startIndex, int endIndex]
+        {
+            get
+            {
+                if (startIndex > endIndex)
+                {
+                    throw new System.AccessViolationException();
+                }
+
+                return GetField(startIndex, endIndex);
+            }
+        }
+
         public FixedWidthLine(string line, bool isEOF)
         {
             this.line = line;
