@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using FluentParser.Attributes;
 using FluentParser.Exceptions;
+using System;
 
 namespace FluentParser
 {
@@ -110,10 +111,10 @@ namespace FluentParser
             }
         }
 
-        public static List<T> ReadAndParseCSV<T>(Stream s) where T : new()
+        public static List<T> ReadAndParseCSV<T>(StreamReader s) where T : new()
         {
             var items = new List<T>();
-            TextReader reader = new StreamReader(s);
+            TextReader reader = s; 
 
             string line = string.Empty;
             line = reader.ReadLine();
@@ -136,7 +137,6 @@ namespace FluentParser
                     var rawValues = CSVParser.ParseCSVLine(line);
                     T newInstanceOfEntity = new T();
 
-                    TypeConverter tc = new TypeConverter();
                     foreach (var header in result.Headers)
                     {
                         if (header.HeaderAttribute.Position != -1)
@@ -145,28 +145,8 @@ namespace FluentParser
 
                             if (!string.IsNullOrEmpty(value.ToString()))
                             {
-
                                 header.Property.SetValue(newInstanceOfEntity,
-                                    tc.ConvertTo(value.ToString(), header.Property.PropertyType),
-                                    null);
-
-                                // TODO: This might work better with TypeConverter rather than this if statement
-                                //if (header.Property.PropertyType == typeof(Int32))
-                                //{
-                                //    header.Property.SetValue(newInstanceOfEntity, value.ToInt(), null);
-                                //}
-                                //else if (header.Property.PropertyType == typeof(decimal))
-                                //{
-                                //    header.Property.SetValue(newInstanceOfEntity, value.ToDecimal(), null);
-                                //}
-                                //else if (header.Property.PropertyType == typeof(DateTime))
-                                //{
-                                //    header.Property.SetValue(newInstanceOfEntity, value.TryToDateTime(), null);
-                                //}
-                                //else
-                                //{
-                                //    header.Property.SetValue(newInstanceOfEntity, value.ToString(), null);
-                                //}
+                                    Convert.ChangeType(value.ToString(), header.Property.PropertyType), null);
                             }
                         }
                     }
@@ -191,7 +171,7 @@ namespace FluentParser
             int blankHeaderFieldCount = 0;
             int nonBlankHeaderFieldCount = 0;
 
-            List<CSVHeaderInfo> headers = new List<CSVHeaderInfo>();
+            List<CSVHeaderInfo> header_info = new List<CSVHeaderInfo>();
 
             foreach (var prop in props)
             {
@@ -223,7 +203,7 @@ namespace FluentParser
                         blankHeaderFieldCount++;
                     }
 
-                    headers.Add(info);
+                    header_info.Add(info);
                 }
             }
 
@@ -232,7 +212,7 @@ namespace FluentParser
                 throw new CSVNoHeaderException();
             }
 
-            return new CSVHeaderParseResult(headers);
+            return new CSVHeaderParseResult(header_info);
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace FluentParser
@@ -11,6 +8,8 @@ namespace FluentParser
         private string _fullpath;
         private StreamReader _filestream;
 
+        public StreamReader Stream { get; private set; }
+
         public CSVFile(string fullpath)
         {
             _fullpath = fullpath;
@@ -19,6 +18,7 @@ namespace FluentParser
         public void Open()
         {
             _filestream = new StreamReader(File.OpenRead(_fullpath));
+            this.Stream = _filestream;
         }
 
         public CSVLine ReadLine()
