@@ -2,6 +2,7 @@ Fluent Parser is intended to be an easier to use API for the common task of pars
 
 Example Usage:
 
+// Read and parse a fixed-width delimited file
 ItemEntity entity = new ItemEntity();
 using (var file = new FixedWidthFile(filename))
 {
@@ -19,3 +20,52 @@ using (var file = new FixedWidthFile(filename))
 	entity.Brand = line.GetField(52, 72).ToString().Trim();
 	entity.EffectiveDate = line.GetField(73, 82).ToDateTime();
 }
+
+// Alternate form of reading a fixed-wdith delimited file
+ItemEntity entity = new ItemEntity();
+using (var file = new FixedWidthFile(filename))
+{
+    file.Open();
+    var line = file.ReadLine();
+    entity.Name = line[0, 19].ToString().Trim();
+    entity.Price = line[20, 29].TryToDecimal() ?? 0;
+    entity.UPC = line[29, 42].ToString();
+    entity.Size = line[42, 52].ToString().Trim();
+    entity.Brand = line[52, 72].ToString().Trim();
+    entity.EffectiveDate = line[73, 82].TryToDateTime();
+}
+
+//  Read and parse CSV file
+ItemEntity entity = new ItemEntity();
+using (var file = new CSVFile(filename))
+{
+    file.Open();
+    var line = file.ReadLine();
+    entity.Name = line.GetField(0).ToString().Trim();
+    entity.Price = line.GetField(1).TryToDecimal() ?? 0;
+    entity.UPC = line.GetField(2).ToString();
+    entity.Size = line.GetField(3).ToString().Trim();
+    entity.Brand = line.GetField(4).ToString().Trim();
+    entity.EffectiveDate = line.GetField(5).TryToDateTime();
+}
+
+// Alternative CSV Field Access Syntax
+ItemEntity entity = new ItemEntity();
+using (var file = new CSVFile(filename))
+{
+    file.Open();
+    var line = file.ReadLine();
+    entity.Name = line[0].ToString().Trim();
+    entity.Price = line[1].TryToDecimal() ?? 0;
+    entity.UPC = line[2].ToString();
+    entity.Size = line[3].ToString().Trim();
+    entity.Brand = line[4].ToString().Trim();
+    entity.EffectiveDate = line[5].TryToDateTime();
+}
+
+*******************************************************************************************************
+*******************************************************************************************************
+You can also use .Net's built in data model to parse your entities from Files by marking up your models
+with Attributes
+
+

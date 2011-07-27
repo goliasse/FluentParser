@@ -3,11 +3,12 @@
 // Modified by Jim Wallace.
 //***********************************************************************************************
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
+using System.IO;
 using System.Text;
-using System.Collections;
+using FluentParser.Attributes;
+using FluentParser.Exceptions;
 
 namespace FluentParser
 {
@@ -107,6 +108,131 @@ namespace FluentParser
                     intCurrState = 0;
                     break;
             }
+        }
+
+        public static List<T> ReadAndParseCSV<T>(Stream s) where T : new()
+        {
+            var items = new List<T>();
+            TextReader reader = new StreamReader(s);
+
+            string line = string.Empty;
+            line = reader.ReadLine();
+
+            var result = VerifyHeader<T>(line);
+
+            if (result.HeaderParseSuccess == HeaderParseSuccess.Failed)
+            {
+                throw new CSVHeaderItemsMissingException(result.MissingRequiredFields);
+            }
+
+            int lineNumber = 1;
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                lineNumber++;
+
+                if (!string.IsNullOrEmpty(line))
+                {
+                    var rawValues = CSVParser.ParseCSVLine(line);
+                    T newInstanceOfEntity = new T();
+
+                    TypeConverter tc = new TypeConverter();
+                    foreach (var header in result.Headers)
+                    {
+                        if (header.HeaderAttribute.Position != -1)
+                        {
+                            var value = rawValues[header.HeaderAttribute.Position];
+
+                            if (!string.IsNullOrEmpty(value.ToString()))
+                            {
+
+                                header.Property.SetValue(newInstanceOfEntity,
+                                    tc.ConvertTo(value.ToString(), header.Property.PropertyType),
+                                    null);
+
+                                // TODO: This might work better with TypeConverter rather than this if statement
+                                //if (header.Property.PropertyType == typeof(Int32))
+                                //{
+                                //    header.Property.SetValue(newInstanceOfEntity, value.ToInt(), null);
+                                //}
+                                //else if (header.Property.PropertyType == typeof(decimal))
+                                //{
+                                //    header.Property.SetValue(newInstanceOfEntity, value.ToDecimal(), null);
+                                //}
+                                //else if (header.Property.PropertyType == typeof(DateTime))
+                                //{
+                                //    header.Property.SetValue(newInstanceOfEntity, value.TryToDateTime(), null);
+                                //}
+                                //else
+                                //{
+                                //    header.Property.SetValue(newInstanceOfEntity, value.ToString(), null);
+                                //}
+                            }
+                        }
+                    }
+
+                    items.Add(newInstanceOfEntity);
+                }
+            }
+
+            return items;
+        }
+
+        private static CSVHeaderParseResult VerifyHeader<T>(string line)
+        {
+            // parse the header line and locate the positions
+            // of each of the fields.
+            var headerValues = CSVParser.ParseCSVLine(line);
+            bool headerExists = false;
+
+            // Reflect over Trade object and find all the CSV attributes
+            var props = typeof(T).GetProperties();
+
+            int blankHeaderFieldCount = 0;
+            int nonBlankHeaderFieldCount = 0;
+
+            List<CSVHeaderInfo> headers = new List<CSVHeaderInfo>();
+
+            foreach (var prop in props)
+            {
+                var attributes = prop.GetCustomAttributes(typeof(CSVFieldAttribute), true);
+                foreach (CSVFieldAttribute attribute in attributes)
+                {
+                    var csvFieldAttribute = attributes[0] as CSVFieldAttribute;
+
+                    CSVHeaderInfo info = new CSVHeaderInfo();
+                    info.HeaderAttribute = csvFieldAttribute;
+                    info.Property = prop;
+
+                    if (!string.IsNullOrEmpty(csvFieldAttribute.Header))
+                    {
+                        nonBlankHeaderFieldCount++;
+
+                        for (int i = 0; i < headerValues.Count; i++)
+                        {
+                            if (headerValues[i].ToString().ToUpperInvariant() == csvFieldAttribute.Header.ToUpperInvariant())
+                            {
+                                csvFieldAttribute.Position = i;
+                                headerExists = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        blankHeaderFieldCount++;
+                    }
+
+                    headers.Add(info);
+                }
+            }
+
+            if ((blankHeaderFieldCount != nonBlankHeaderFieldCount) && !headerExists)
+            {
+                throw new CSVNoHeaderException();
+            }
+
+            return new CSVHeaderParseResult(headers);
         }
     }
 }

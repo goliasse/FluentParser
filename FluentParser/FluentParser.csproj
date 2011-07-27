@@ -40,13 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CSVField.cs" />
     <Compile Include="CSVFile.cs" />
+    <Compile Include="CSVHeaderInfo.cs" />
+    <Compile Include="Exceptions\CSVHeaderItemsMissingException.cs" />
     <Compile Include="CSVLine.cs" />
+    <Compile Include="Exceptions\CSVNoHeaderException.cs" />
     <Compile Include="CSVParser.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FixedWidthFile.cs" />
     <Compile Include="FixedWidthLine.cs" />
+    <Compile Include="CSVHeaderParseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
