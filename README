@@ -2,7 +2,9 @@ Fluent Parser is intended to be an easier to use API for the common task of pars
 
 Example Usage:
 
-// Read and parse a fixed-width delimited file
+/********************************************************************
+* Read and parse a fixed-width delimited file
+********************************************************************/
 ItemEntity entity = new ItemEntity();
 using (var file = new FixedWidthFile(filename))
 {
@@ -21,7 +23,9 @@ using (var file = new FixedWidthFile(filename))
 	entity.EffectiveDate = line.GetField(73, 82).ToDateTime();
 }
 
-// Alternate form of reading a fixed-wdith delimited file
+/********************************************************************
+* Alternate form of reading a fixed-wdith delimited file
+********************************************************************/
 ItemEntity entity = new ItemEntity();
 using (var file = new FixedWidthFile(filename))
 {
@@ -35,7 +39,9 @@ using (var file = new FixedWidthFile(filename))
     entity.EffectiveDate = line[73, 82].TryToDateTime();
 }
 
-//  Read and parse CSV file
+/********************************************************************
+*  Read and parse CSV file
+********************************************************************/
 ItemEntity entity = new ItemEntity();
 using (var file = new CSVFile(filename))
 {
@@ -49,7 +55,9 @@ using (var file = new CSVFile(filename))
     entity.EffectiveDate = line.GetField(5).TryToDateTime();
 }
 
-// Alternative CSV Field Access Syntax
+/********************************************************************
+* Alternative CSV Field Access Syntax
+********************************************************************/
 ItemEntity entity = new ItemEntity();
 using (var file = new CSVFile(filename))
 {
@@ -65,7 +73,4 @@ using (var file = new CSVFile(filename))
 
 *******************************************************************************************************
 *******************************************************************************************************
-You can also use .Net's built in data model to parse your entities from Files by marking up your models
-with Attributes
-
-
+ENTITY MAPPING WITH ATTRIBUTES

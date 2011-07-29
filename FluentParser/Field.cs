@@ -28,6 +28,20 @@ namespace FluentParser
             return null;
         }
 
+        public Int64 ToInt64()
+        {
+            return Int64.Parse(_fieldString);
+        }
+
+        public Int64? TryToInt64()
+        {
+            Int64 result;
+            if (Int64.TryParse(_fieldString, out result))
+                return result;
+
+            return null;
+        }
+
         public decimal ToDecimal()
         {
             return decimal.Parse(_fieldString);

@@ -9,6 +9,7 @@ namespace FluentParser
     {
         private string line;
         public bool IsEOF { get; private set; }
+        public int LineNumber { get; private set; }
 
         public Field this[int startIndex, int endIndex]
         {
